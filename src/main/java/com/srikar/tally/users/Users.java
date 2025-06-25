@@ -1,9 +1,9 @@
 package com.srikar.tally.users;
 
-import com.srikar.tally.expenses.Balances;
-import com.srikar.tally.expenses.ExpenseRecords;
-import com.srikar.tally.friends.Invitations;
-import com.srikar.tally.groups.UserGroups;
+import com.srikar.tally.expenses.model.Balances;
+import com.srikar.tally.expenses.model.ExpenseRecords;
+import com.srikar.tally.friends.model.Invitations;
+import com.srikar.tally.groups.model.UserGroups;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
