@@ -26,7 +26,7 @@ public class SecurityConfiguration {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfiguration()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**", "/user/create-if-not-exists")
+                        .requestMatchers("/public/**", "/api/v1/user/create-if-not-exists")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

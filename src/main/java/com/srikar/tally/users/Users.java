@@ -2,6 +2,7 @@ package com.srikar.tally.users;
 
 import com.srikar.tally.expenses.model.Balances;
 import com.srikar.tally.expenses.model.ExpenseRecords;
+import com.srikar.tally.expenses.model.Expenses;
 import com.srikar.tally.friends.model.Invitations;
 import com.srikar.tally.groups.model.UserGroups;
 import jakarta.persistence.CascadeType;
@@ -48,4 +49,7 @@ public class Users {
 
     @OneToMany(mappedBy = "owesTo")
     private List<Balances> owedBalances;
+
+    @OneToMany(mappedBy = "user")
+    private List<Expenses> personalExpenses;
 }

@@ -33,7 +33,6 @@ public class FirebaseAuthFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(principal, null, Collections.emptyList());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-
             }catch (Exception e){
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Access Token");
                 return;
