@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface ExpensesRepository extends JpaRepository<Expenses, Integer> {
     List<Expenses> findByUser_IdAndMyGroupIsNull(String userId);
+    List<Expenses> findExpensesByMyGroup_Id(int groupId);
 }

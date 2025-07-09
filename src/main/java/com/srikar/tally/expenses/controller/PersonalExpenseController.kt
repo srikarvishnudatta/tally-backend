@@ -35,7 +35,7 @@ class PersonalExpenseController (
     fun putPersonalExpense(@AuthenticationPrincipal
                            firebaseUserPrincipal:
                            FirebaseUserPrincipal,
-                            @PathVariable expenseId: Int,
+                           @PathVariable expenseId: Int,
                            @RequestBody expense: PersonalExpenseDto){
         personalService.updatePersonalExpense(expenseId, expense)
     }
