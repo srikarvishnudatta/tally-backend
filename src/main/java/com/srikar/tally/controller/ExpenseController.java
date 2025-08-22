@@ -1,8 +1,9 @@
 package com.srikar.tally.controller;
 
 
-import com.srikar.tally.dto.ExpenseRequestDto;
-import com.srikar.tally.dto.ExpenseResponseDto;
+import com.srikar.tally.dto.expenses.ExpenseRequestDto;
+import com.srikar.tally.dto.expenses.ExpenseResponseDto;
+import com.srikar.tally.dto.group.GroupBalanceResponseDto;
 import com.srikar.tally.service.ExpenseService;
 import lombok.Builder;
 import org.springframework.http.ResponseEntity;
@@ -43,11 +44,26 @@ public class ExpenseController {
         URI location = URI.create("/api/v1/expense/" + expenseCreated.getId());
         return ResponseEntity.created(location).body(expenseCreated);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<ExpenseResponseDto> updateExpense(
+            @PathVariable("id") int id,
+            @Validated({Builder.Default.class}) @RequestBody ExpenseRequestDto dto
+    ){
+       var expenseUpdated = expenseService.updateExpense(id, dto);
+       return ResponseEntity.ok(expenseUpdated);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteExpense(
             @PathVariable("id") int expenseId
     ){
         expenseService.deleteExpense(expenseId);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{groupId}/balances")
+    public ResponseEntity<List<GroupBalanceResponseDto>> getGroupBalances(
+            @PathVariable("groupId") int groupId
+    ){
+        var balances = expenseService.calculateBalances(groupId);
+        return ResponseEntity.ok(balances);
     }
 }

@@ -1,8 +1,8 @@
 package com.srikar.tally.controller;
 
 import com.srikar.tally.configuration.FirebaseUserPrincipal;
-import com.srikar.tally.dto.GroupRequestDto;
-import com.srikar.tally.dto.GroupResponseDto;
+import com.srikar.tally.dto.group.GroupRequestDto;
+import com.srikar.tally.dto.group.GroupResponseDto;
 import com.srikar.tally.service.GroupService;
 import lombok.Builder;
 import org.springframework.http.ResponseEntity;

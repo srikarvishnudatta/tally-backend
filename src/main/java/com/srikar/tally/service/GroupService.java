@@ -1,9 +1,9 @@
 package com.srikar.tally.service;
 
 
-import com.srikar.tally.dto.GroupMapper;
-import com.srikar.tally.dto.GroupRequestDto;
-import com.srikar.tally.dto.GroupResponseDto;
+import com.srikar.tally.dto.group.GroupMapper;
+import com.srikar.tally.dto.group.GroupRequestDto;
+import com.srikar.tally.dto.group.GroupResponseDto;
 import com.srikar.tally.exception.GroupNotFoundException;
 import com.srikar.tally.repository.BalanceRepository;
 import com.srikar.tally.model.Groups;

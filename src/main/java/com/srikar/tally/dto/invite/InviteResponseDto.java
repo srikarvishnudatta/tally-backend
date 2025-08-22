@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.invite;
 
 import com.srikar.tally.model.InviteStatus;
 import lombok.AllArgsConstructor;

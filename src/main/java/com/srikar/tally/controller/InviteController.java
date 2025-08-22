@@ -1,7 +1,7 @@
 package com.srikar.tally.controller;
 
 import com.srikar.tally.configuration.FirebaseUserPrincipal;
-import com.srikar.tally.dto.InviteResponseDto;
+import com.srikar.tally.dto.invite.InviteResponseDto;
 import com.srikar.tally.service.InviteService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

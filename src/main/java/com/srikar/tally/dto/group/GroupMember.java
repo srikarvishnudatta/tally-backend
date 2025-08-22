@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.group;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

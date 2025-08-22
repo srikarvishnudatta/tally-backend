@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.group;
 
 import com.srikar.tally.model.Groups;
 import com.srikar.tally.model.Users;

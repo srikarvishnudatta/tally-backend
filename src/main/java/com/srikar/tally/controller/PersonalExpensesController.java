@@ -1,9 +1,9 @@
 package com.srikar.tally.controller;
 
 import com.srikar.tally.configuration.FirebaseUserPrincipal;
-import com.srikar.tally.dto.BalanceResponseDto;
-import com.srikar.tally.dto.PersonalExpenseRequestDto;
-import com.srikar.tally.dto.PersonalExpenseResponseDto;
+import com.srikar.tally.dto.expenses.BalanceResponseDto;
+import com.srikar.tally.dto.expenses.PersonalExpenseRequestDto;
+import com.srikar.tally.dto.expenses.PersonalExpenseResponseDto;
 import com.srikar.tally.dto.validators.CreatePersonalExpenseValidationGroup;
 import com.srikar.tally.service.PersonalExpenseService;
 import lombok.Builder;

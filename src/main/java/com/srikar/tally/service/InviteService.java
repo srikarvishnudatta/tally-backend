@@ -1,7 +1,7 @@
 package com.srikar.tally.service;
 
-import com.srikar.tally.dto.InviteMapper;
-import com.srikar.tally.dto.InviteResponseDto;
+import com.srikar.tally.dto.invite.InviteMapper;
+import com.srikar.tally.dto.invite.InviteResponseDto;
 import com.srikar.tally.exception.InviteNotValidException;
 import com.srikar.tally.exception.UserNotFoundException;
 import com.srikar.tally.model.InviteStatus;

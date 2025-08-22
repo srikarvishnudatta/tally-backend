@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.expenses;
 
 import com.srikar.tally.model.Expense;
 import com.srikar.tally.model.ExpenseRecords;
@@ -31,6 +31,13 @@ public class ExpenseMapper {
                 .paidBy(expenseRecord.getPaidBy().getFirstName())
                 .owed(expenseRecord.getOwedBy().getFirstName())
                 .amount(expenseRecord.getValue())
+                .build();
+    }
+    public static Expense toExpense(ExpenseRequestDto dto){
+        return Expense.builder()
+                .expenseName(dto.getExpenseName())
+                .description(dto.getDescription())
+                .amount(dto.getAmount())
                 .build();
     }
 }

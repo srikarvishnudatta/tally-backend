@@ -1,10 +1,10 @@
 package com.srikar.tally.service;
 
-import com.srikar.tally.dto.BalanceResponseDto;
-import com.srikar.tally.dto.PersonalExpenseRequestDto;
-import com.srikar.tally.dto.ExpenseMapper;
+import com.srikar.tally.dto.expenses.BalanceResponseDto;
+import com.srikar.tally.dto.expenses.PersonalExpenseRequestDto;
+import com.srikar.tally.dto.expenses.ExpenseMapper;
 import com.srikar.tally.exception.ExpenseNotFoundException;
-import com.srikar.tally.dto.PersonalExpenseResponseDto;
+import com.srikar.tally.dto.expenses.PersonalExpenseResponseDto;
 import com.srikar.tally.model.ExpenseType;
 import com.srikar.tally.model.Expense;
 import com.srikar.tally.repository.ExpensesRepository;

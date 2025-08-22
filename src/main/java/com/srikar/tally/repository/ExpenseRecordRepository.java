@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ExpenseRecordRepository extends JpaRepository<ExpenseRecords, Integer> {
-
+    void deleteExpenseRecordsByExpense_Id(int expenseId);
 }

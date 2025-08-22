@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.expenses;
 
 import com.srikar.tally.model.ExpenseType;
 import lombok.AllArgsConstructor;

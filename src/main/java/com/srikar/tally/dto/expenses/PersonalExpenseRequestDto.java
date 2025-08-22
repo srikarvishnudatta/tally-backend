@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.expenses;
 
 import com.srikar.tally.dto.validators.CreateExpenseValidationGroup;
 import com.srikar.tally.dto.validators.CreatePersonalExpenseValidationGroup;

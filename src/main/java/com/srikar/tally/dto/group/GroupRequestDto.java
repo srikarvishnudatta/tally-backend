@@ -1,4 +1,4 @@
-package com.srikar.tally.dto;
+package com.srikar.tally.dto.group;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
