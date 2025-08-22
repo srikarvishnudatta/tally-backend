@@ -47,7 +47,7 @@ public class InviteService {
             throw new InviteNotValidException("Invite is no longer valid");
         }
         var group = invite.getGroup();
-        group.getGroupMembers().add(user);
+        group.getMembers().add(user);
         deleteInvite(inviteId);
         groupRepository.save(group);
     }

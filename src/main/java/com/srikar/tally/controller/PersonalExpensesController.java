@@ -2,7 +2,7 @@ package com.srikar.tally.controller;
 
 import com.srikar.tally.configuration.FirebaseUserPrincipal;
 import com.srikar.tally.dto.expenses.BalanceResponseDto;
-import com.srikar.tally.dto.expenses.PersonalExpenseRequestDto;
+import com.srikar.tally.dto.expenses.ExpenseRequestDto;
 import com.srikar.tally.dto.expenses.PersonalExpenseResponseDto;
 import com.srikar.tally.dto.validators.CreatePersonalExpenseValidationGroup;
 import com.srikar.tally.service.PersonalExpenseService;
@@ -40,7 +40,7 @@ public class PersonalExpensesController {
     public  ResponseEntity<PersonalExpenseResponseDto> createNewExpense(
             @AuthenticationPrincipal FirebaseUserPrincipal firebaseUserPrincipal,
             @Validated({Builder.Default.class, CreatePersonalExpenseValidationGroup.class})
-            PersonalExpenseRequestDto dto
+            @RequestBody ExpenseRequestDto dto
             ){
         var expenseCreated = personalExpenseService.createPersonalExpense(
                 firebaseUserPrincipal.getUid(),
@@ -52,7 +52,7 @@ public class PersonalExpensesController {
     public ResponseEntity<PersonalExpenseResponseDto> updateExpense(
             @PathVariable("id") int id,
             @Validated({Builder.Default.class, CreatePersonalExpenseValidationGroup.class})
-            PersonalExpenseRequestDto dto
+            @RequestBody ExpenseRequestDto dto
     ){
         var updatedExpense = personalExpenseService.updatePersonalExpense(id, dto);
         return ResponseEntity.ok(updatedExpense);

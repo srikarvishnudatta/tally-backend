@@ -1,10 +1,7 @@
 package com.srikar.tally.service;
 
-import com.srikar.tally.dto.expenses.BalanceResponseDto;
-import com.srikar.tally.dto.expenses.PersonalExpenseRequestDto;
-import com.srikar.tally.dto.expenses.ExpenseMapper;
+import com.srikar.tally.dto.expenses.*;
 import com.srikar.tally.exception.ExpenseNotFoundException;
-import com.srikar.tally.dto.expenses.PersonalExpenseResponseDto;
 import com.srikar.tally.model.ExpenseType;
 import com.srikar.tally.model.Expense;
 import com.srikar.tally.repository.ExpensesRepository;
@@ -36,24 +33,24 @@ public class PersonalExpenseService {
                 .toList();
     }
 
-    public PersonalExpenseResponseDto createPersonalExpense(String userId, PersonalExpenseRequestDto expense) {
+    public PersonalExpenseResponseDto createPersonalExpense(String userId, ExpenseRequestDto expense) {
         var user = entityManager.getReference(Users.class, userId);
         var newExpense = Expense
                 .builder()
                 .expenseName(expense.getExpenseName())
                 .amount(expense.getAmount())
                 .user(user)
-                .expenseType(expense.getExpenseType())
+                .expenseType(ExpenseType.valueOf(expense.getExpenseType()))
                 .description(expense.getDescription()).build();
         newExpense = expensesRepository.save(newExpense);
         return ExpenseMapper.toDto(newExpense);
     }
-    public PersonalExpenseResponseDto updatePersonalExpense(int expenseId, PersonalExpenseRequestDto dto){
+    public PersonalExpenseResponseDto updatePersonalExpense(int expenseId, ExpenseRequestDto dto){
         var expense = expensesRepository.findById(expenseId).orElseThrow(() -> new ExpenseNotFoundException("Expense Cannot be found"));
         expense.setExpenseName(dto.getExpenseName());
         expense.setDescription(dto.getDescription());
         expense.setAmount(dto.getAmount());
-        expense.setExpenseType(dto.getExpenseType());
+        expense.setExpenseType(ExpenseType.valueOf(dto.getExpenseType()));
         expense = expensesRepository.save(expense);
         return ExpenseMapper.toDto(expense);
     }

@@ -4,6 +4,7 @@ package com.srikar.tally.controller;
 import com.srikar.tally.dto.expenses.ExpenseRequestDto;
 import com.srikar.tally.dto.expenses.ExpenseResponseDto;
 import com.srikar.tally.dto.group.GroupBalanceResponseDto;
+import com.srikar.tally.dto.validators.CreateExpenseValidationGroup;
 import com.srikar.tally.service.ExpenseService;
 import lombok.Builder;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +39,7 @@ public class ExpenseController {
     }
     @PostMapping("/")
     public ResponseEntity<ExpenseResponseDto> createNewExpense(
-            @Validated({Builder.Default.class}) @RequestBody ExpenseRequestDto dto
+            @Validated({Builder.Default.class, CreateExpenseValidationGroup.class}) @RequestBody ExpenseRequestDto dto
             ){
         var expenseCreated = expenseService.createExpense(dto);
         URI location = URI.create("/api/v1/expense/" + expenseCreated.getId());
@@ -47,7 +48,7 @@ public class ExpenseController {
     @PutMapping("/{id}")
     public ResponseEntity<ExpenseResponseDto> updateExpense(
             @PathVariable("id") int id,
-            @Validated({Builder.Default.class}) @RequestBody ExpenseRequestDto dto
+            @Validated({Builder.Default.class, CreateExpenseValidationGroup.class}) @RequestBody ExpenseRequestDto dto
     ){
        var expenseUpdated = expenseService.updateExpense(id, dto);
        return ResponseEntity.ok(expenseUpdated);

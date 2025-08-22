@@ -37,7 +37,7 @@ public class Expense {
     @Column(nullable = false)
     private ExpenseType expenseType;
 
-    @OneToMany(mappedBy = "expenses", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL)
     List<ExpenseRecords> expenseRecords = new ArrayList<>();
 
     @ManyToOne

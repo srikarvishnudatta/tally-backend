@@ -12,7 +12,7 @@ public class GroupMapper {
                 .groupName(groups.getGroupName())
                 .groupDescription(groups.getGroupDescription())
                 .owner(groups.getOwner().getId())
-                .groupMemberList(groups.getGroupMembers().stream().map(GroupMapper::toMember).toList())
+                .groupMemberList(groups.getMembers().stream().map(GroupMapper::toMember).toList())
                 .build();
     }
     public static GroupMember toMember(Users user){

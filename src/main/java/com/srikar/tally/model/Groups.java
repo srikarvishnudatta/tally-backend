@@ -40,9 +40,6 @@ public class Groups {
     )
     private List<Users> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "groupsList")
-    private List<Users> groupMembers = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "balanceGroups")
     private List<Balances> balances = new ArrayList<>();
