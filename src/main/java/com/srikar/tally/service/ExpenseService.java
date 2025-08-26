@@ -7,18 +7,23 @@ import com.srikar.tally.dto.expenses.ExpenseResponseDto;
 import com.srikar.tally.dto.group.GroupBalanceResponseDto;
 import com.srikar.tally.dto.group.GroupMapper;
 import com.srikar.tally.exception.ExpenseNotFoundException;
+import com.srikar.tally.model.Expense;
 import com.srikar.tally.model.ExpenseRecords;
 import com.srikar.tally.model.Users;
 import com.srikar.tally.repository.ExpenseRecordRepository;
 import com.srikar.tally.repository.ExpensesRepository;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ExpenseService  {
+    private static final Logger log = LoggerFactory.getLogger(ExpenseService.class);
     private final ExpensesRepository expenseRepo;
     private final ExpenseRecordRepository expenseRecordRepo;
     private final UserService userService;
@@ -38,10 +43,13 @@ public class ExpenseService  {
     public List<ExpenseResponseDto> getExpenseListByGroup(int groupId){
         return expenseRepo.findExpensesByMyGroup_Id(groupId).stream().map(ExpenseMapper::toExpenseResponseDto).toList();
     }
-    public ExpenseResponseDto getExpenseById(int expenseId){
-        var expenseFound = expenseRepo.findById(expenseId)
-                .orElseThrow(() -> new ExpenseNotFoundException("Expense cannot be found"));
+    public ExpenseResponseDto getExpenseResponse(int expenseId){
+        var expenseFound = getExpenseById(expenseId);
         return ExpenseMapper.toExpenseResponseDto(expenseFound);
+    }
+    public Expense getExpenseById(int expenseId){
+        return expenseRepo.findById(expenseId)
+                .orElseThrow(() -> new ExpenseNotFoundException("Expense cannot be found"));
     }
     @Transactional
     public ExpenseResponseDto createExpense(ExpenseRequestDto dto){
@@ -49,16 +57,21 @@ public class ExpenseService  {
         var paidBy = userService.getUserById(dto.getPaidBy());
         var expenseCreated = ExpenseMapper.toExpense(dto);
         expenseCreated.setMyGroup(groupFound);
+        expenseCreated.setUser(paidBy);
+        var expenseSaved = expenseRepo.save(expenseCreated);
+        var expenseRecords = new ArrayList<ExpenseRecords>();
         dto.getSplitAmong().forEach((key, value) -> {
-            ExpenseRecords record = ExpenseRecords.builder()
+            var record = ExpenseRecords.builder()
                     .owedBy(userService.getUserById(key))
                     .paidBy(paidBy)
                     .value(value)
+                    .expense(expenseSaved)
                     .build();
-            expenseRecordRepo.save(record);
-            expenseCreated.addExpenseRecord(record);
+            expenseRecords.add(record);
         });
-        var expense = expenseRepo.save(expenseCreated);
+        var expenseR = expenseRecordRepo.saveAll(expenseRecords);
+        expenseSaved.setExpenseRecords(expenseR);
+        var expense = expenseRepo.save(expenseSaved);
         return ExpenseMapper.toExpenseResponseDto(expense);
     }
 
@@ -66,11 +79,8 @@ public class ExpenseService  {
     public ExpenseResponseDto updateExpense(int expenseId, ExpenseRequestDto dto){
         var groupFound = groupService.findById(dto.getGroupId());
         var paidBy = userService.getUserById(dto.getPaidBy());
-        var expenseFound = expenseRepo
-                .findById(expenseId)
-                .orElseThrow(() -> new ExpenseNotFoundException("Expense not found"));
+        var expenseFound = getExpenseById(expenseId);
         expenseFound.setExpenseName(dto.getExpenseName());
-        expenseFound.setDescription(dto.getDescription());
         expenseFound.setAmount(dto.getAmount());
         expenseFound.setMyGroup(groupFound);
         // deleting all expense records for this expense

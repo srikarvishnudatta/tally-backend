@@ -10,8 +10,6 @@ import com.srikar.tally.repository.BalanceRepository;
 import com.srikar.tally.model.Groups;
 import com.srikar.tally.repository.GroupRepository;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import java.util.List;
 
 @Service
 public class GroupService{
-    private static final Logger log = LoggerFactory.getLogger(GroupService.class);
     private final GroupRepository groupRepo;
     private final BalanceRepository balanceRepo;
     private final UserService userService;
@@ -48,12 +45,10 @@ public class GroupService{
     public GroupResponseDto createNewGroup(String userId, GroupRequestDto dto){
         var user = userService.getUserById(userId);
         // no need to save in user as well. jpa will handle it for us.
-        log.info("group info {}", dto);
         var membersList = new ArrayList<Users>();
         membersList.add(user);
         var group = Groups.builder()
                 .groupName(dto.getGroupName())
-                .groupDescription(dto.getGroupDescription())
                 .members(membersList)
                 .build();
         group = groupRepo.save(group);
@@ -63,7 +58,6 @@ public class GroupService{
     public GroupResponseDto updateGroup(int groupId, GroupRequestDto dto) {
         var group = findById(groupId);
         group.setGroupName(dto.getGroupName());
-        group.setGroupDescription(dto.getGroupDescription());
         group = groupRepo.save(group);
         return GroupMapper.toDto(group);
     }

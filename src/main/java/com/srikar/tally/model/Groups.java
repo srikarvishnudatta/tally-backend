@@ -20,8 +20,6 @@ public class Groups {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String groupName;
-    private String groupDescription;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

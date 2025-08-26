@@ -22,8 +22,6 @@ public class Expense {
 
     private String expenseName;
 
-    private String description;
-
     private Double amount;
 
     @Column(updatable = false, nullable = false)
@@ -47,9 +45,5 @@ public class Expense {
     @PrePersist
     void create(){
        this.createdAt = LocalDateTime.now();
-    }
-    public void addExpenseRecord(ExpenseRecords record){
-        expenseRecords.add(record);
-        record.setExpense(this);
     }
 }

@@ -2,13 +2,13 @@ package com.srikar.tally.dto.expenses;
 
 import com.srikar.tally.model.Expense;
 import com.srikar.tally.model.ExpenseRecords;
+import com.srikar.tally.model.ExpenseType;
 
 public class ExpenseMapper {
     public static PersonalExpenseResponseDto toDto(Expense expense){
         return PersonalExpenseResponseDto.builder()
                 .id(expense.getId())
                 .expenseName(expense.getExpenseName())
-                .description(expense.getDescription())
                 .amount(expense.getAmount())
                 .expenseType(expense.getExpenseType())
                 .createdAt(expense.getCreatedAt())
@@ -18,7 +18,6 @@ public class ExpenseMapper {
         return ExpenseResponseDto.builder()
                 .id(expense.getId())
                 .expenseName(expense.getExpenseName())
-                .description(expense.getDescription())
                 .amount(expense.getAmount())
                 .paidBy(expense.getUser().getFirstName())
                 .shareValues(expense.getExpenseRecords().stream().map(ExpenseMapper::toRecordResponseDto).toList())
@@ -36,8 +35,8 @@ public class ExpenseMapper {
     public static Expense toExpense(ExpenseRequestDto dto){
         return Expense.builder()
                 .expenseName(dto.getExpenseName())
-                .description(dto.getDescription())
                 .amount(dto.getAmount())
+                .expenseType(ExpenseType.EXPENSE)
                 .build();
     }
 }

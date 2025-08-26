@@ -30,13 +30,6 @@ public class ExpenseController {
         var expenses = expenseService.getExpenseListByGroup(groupId);
         return ResponseEntity.ok(expenses);
     }
-//    @GetMapping("/{expenseId}")
-//    public ResponseEntity<ExpenseResponseDto> getExpenseById(
-//            @PathVariable("expenseId") int expenseId
-//    ){
-//        var expense = expenseService.getExpenseById(expenseId);
-//        return ResponseEntity.ok(expense);
-//    }
     @PostMapping("/")
     public ResponseEntity<ExpenseResponseDto> createNewExpense(
             @Validated({Builder.Default.class, CreateExpenseValidationGroup.class}) @RequestBody ExpenseRequestDto dto

@@ -12,7 +12,6 @@ import java.util.List;
 public class ExpenseResponseDto {
     private int id;
     private String expenseName;
-    private String description;
     private Double amount;
     private String paidBy;
     private List<ExpenseRecordResponseDto> shareValues;
