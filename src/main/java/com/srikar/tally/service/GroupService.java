@@ -5,13 +5,16 @@ import com.srikar.tally.dto.group.GroupMapper;
 import com.srikar.tally.dto.group.GroupRequestDto;
 import com.srikar.tally.dto.group.GroupResponseDto;
 import com.srikar.tally.exception.GroupNotFoundException;
+import com.srikar.tally.model.Users;
 import com.srikar.tally.repository.BalanceRepository;
 import com.srikar.tally.model.Groups;
 import com.srikar.tally.repository.GroupRepository;
-import com.srikar.tally.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,26 +22,23 @@ import java.util.List;
 public class GroupService{
     private static final Logger log = LoggerFactory.getLogger(GroupService.class);
     private final GroupRepository groupRepo;
-    private final UserRepository userRpo;
     private final BalanceRepository balanceRepo;
+    private final UserService userService;
 
-    public GroupService(GroupRepository groupRepo, UserRepository userRpo, BalanceRepository balanceRepo) {
+    public GroupService(GroupRepository groupRepo, BalanceRepository balanceRepo, UserService userService) {
         this.groupRepo = groupRepo;
-        this.userRpo = userRpo;
         this.balanceRepo = balanceRepo;
+        this.userService = userService;
     }
 
     public List<GroupResponseDto> getAllGroupsByUser(String userId){
         // fetch groups by owner and fetch groups by list of members.
-        var groupsOwner = groupRepo.findGroupsByOwner_Id(userId);
         var groupMembers = groupRepo.findByMembersId(userId);
-        groupsOwner.addAll(groupMembers);
-        return groupsOwner.stream().map(GroupMapper::toDto).toList();
+        return groupMembers.stream().map(GroupMapper::toDto).toList();
     }
 
     public GroupResponseDto findGroupById(int groupId){
-        var groupFound = groupRepo.findById(groupId)
-                .orElseThrow(() -> new GroupNotFoundException("Group cannot be found"));
+        var groupFound = findById(groupId);
         return GroupMapper.toDto(groupFound);
     }
     public Groups findById(int groupId){
@@ -46,29 +46,37 @@ public class GroupService{
     }
 
     public GroupResponseDto createNewGroup(String userId, GroupRequestDto dto){
-        var user = userRpo.findById(userId)
-                .orElseThrow(() -> new GroupNotFoundException("User and group cannot be found"));
+        var user = userService.getUserById(userId);
         // no need to save in user as well. jpa will handle it for us.
         log.info("group info {}", dto);
+        var membersList = new ArrayList<Users>();
+        membersList.add(user);
         var group = Groups.builder()
                 .groupName(dto.getGroupName())
                 .groupDescription(dto.getGroupDescription())
-                .owner(user)
+                .members(membersList)
                 .build();
         group = groupRepo.save(group);
         return GroupMapper.toDto(group);
     }
 
     public GroupResponseDto updateGroup(int groupId, GroupRequestDto dto) {
-        var group = groupRepo.findById(groupId).orElseThrow(() -> new GroupNotFoundException("Group Cannot be found"));
+        var group = findById(groupId);
         group.setGroupName(dto.getGroupName());
         group.setGroupDescription(dto.getGroupDescription());
         group = groupRepo.save(group);
         return GroupMapper.toDto(group);
     }
 
-    public Groups saveGroup(Groups groups){
-        return groupRepo.save(groups);
+    @Transactional
+    public void removeMemberFromGroup(int groupId, String userId){
+        var user = userService.getUserById(userId);
+        var group = findById(groupId);
+        group.getMembers().remove(user);
+    }
+
+    public void saveGroup(Groups groups){
+        groupRepo.save(groups);
     }
     public void deleteGroup(int groupId) {
         groupRepo.deleteById(groupId);

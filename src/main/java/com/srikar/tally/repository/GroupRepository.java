@@ -10,8 +10,8 @@ import java.util.List;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Groups, Integer> {
-    List<Groups> findGroupsByOwner_Id(String id);
-
-    @Query("SELECT g from Groups g LEFT JOIN FETCH g.members m WHERE m.id=:userId")
+    @Query("SELECT g FROM Groups g LEFT JOIN FETCH g.members " +
+            "WHERE EXISTS (SELECT 1 FROM Groups g2 JOIN g2.members m " +
+            "WHERE g2.id = g.id AND m.id = :userId)")
     List<Groups> findByMembersId(@Param("userId") String userId);
 }

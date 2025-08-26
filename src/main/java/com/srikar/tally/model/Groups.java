@@ -28,10 +28,6 @@ public class Groups {
     @Column(nullable = false)
     private LocalDateTime modifiedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    private Users owner;
-
     @ManyToMany
     @JoinTable(
             name = "group_members",
@@ -39,7 +35,6 @@ public class Groups {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<Users> members = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "balanceGroups")
     private List<Balances> balances = new ArrayList<>();

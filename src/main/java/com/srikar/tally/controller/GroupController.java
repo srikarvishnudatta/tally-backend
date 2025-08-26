@@ -60,4 +60,20 @@ public class GroupController {
         return ResponseEntity.noContent().build();
     }
     // this is where you add methods to remove members of a group.
+    @PutMapping("/leave/{id}")
+    public ResponseEntity<?> leaveGroup(
+    @PathVariable("id") int id,
+    @AuthenticationPrincipal FirebaseUserPrincipal userPrincipal
+    ){
+        groupService.removeMemberFromGroup(id, userPrincipal.getUid());
+        return ResponseEntity.noContent().build();
+    }
+    @PutMapping("/remove/{groupId}/user/{userId}")
+    public ResponseEntity<?> removeMember(
+            @PathVariable("groupId") int groupId,
+            @PathVariable("userId") String userId
+    ){
+        groupService.removeMemberFromGroup(groupId, userId);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -12,7 +12,6 @@ public class GroupMapper {
                 .id(groups.getId())
                 .groupName(groups.getGroupName())
                 .groupDescription(groups.getGroupDescription())
-                .owner(GroupMapper.toMember(groups.getOwner()))
                 .groupMemberList(groups.getMembers() == null ? null : groups.getMembers().stream().map(GroupMapper::toMember).toList())
                 .build();
     }

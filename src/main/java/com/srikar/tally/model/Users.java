@@ -21,9 +21,6 @@ public class Users {
     private String firstName;
     private String lastName;
 
-    @OneToMany(mappedBy = "owner")
-    private List<Groups> ownedGroups = new ArrayList<>();
-
     @ManyToMany(mappedBy = "members")
     private List<Groups> memberOfGroups = new ArrayList<>();
 
