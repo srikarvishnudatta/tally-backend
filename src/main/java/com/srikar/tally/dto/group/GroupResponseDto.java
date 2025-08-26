@@ -13,6 +13,6 @@ public class GroupResponseDto {
     private int id;
     private String groupName;
     private String groupDescription;
-    private String owner;
+    private GroupMember owner;
     private List<GroupMember> groupMemberList;
 }

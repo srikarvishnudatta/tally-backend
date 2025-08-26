@@ -1,13 +1,12 @@
 package com.srikar.tally.service;
 
 import com.srikar.tally.dto.invite.InviteMapper;
+import com.srikar.tally.dto.invite.InviteRequestDto;
 import com.srikar.tally.dto.invite.InviteResponseDto;
 import com.srikar.tally.exception.InviteNotValidException;
-import com.srikar.tally.exception.UserNotFoundException;
+import com.srikar.tally.model.Invite;
 import com.srikar.tally.model.InviteStatus;
-import com.srikar.tally.repository.GroupRepository;
 import com.srikar.tally.repository.InviteRepository;
-import com.srikar.tally.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +14,15 @@ import java.util.List;
 @Service
 public class InviteService {
     private final InviteRepository inviteRepository;
-    private final UserRepository userRepository;
-    private final GroupRepository groupRepository;
+    private final UserService userService;
+    private final GroupService groupService;
 
-    public InviteService(InviteRepository inviteRepository, UserRepository userRepository, GroupRepository groupRepository) {
+    public InviteService(InviteRepository inviteRepository,
+                         UserService userService,
+                         GroupService groupService) {
         this.inviteRepository = inviteRepository;
-        this.userRepository = userRepository;
-        this.groupRepository = groupRepository;
+        this.userService = userService;
+        this.groupService = groupService;
     }
 
     public List<InviteResponseDto> getInvitations(String userId){
@@ -32,33 +33,42 @@ public class InviteService {
         var sentInvites = inviteRepository.getInvitesBySender_Id(userId);
         return sentInvites.stream().map(InviteMapper::toDto).toList();
     }
-
+    public InviteResponseDto createInvite(String userId, InviteRequestDto dto){
+        var user = userService.getUserById(userId);
+        var receiver = userService.getUserByEmail(dto.getReceiverEmail());
+        var group = groupService.findById(dto.getGroupId());
+        var inviteSent = Invite.builder()
+                .sender(user)
+                .receiver(receiver)
+                .group(group)
+                .status(InviteStatus.SENT)
+                .build();
+        inviteRepository.save(inviteSent);
+        return InviteMapper.toDto(inviteSent);
+    }
     public void acceptInvite(String userId, int inviteId){
-        var user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User cannot be found"));
-        var invite = inviteRepository
-                .findById(inviteId)
-                .orElseThrow(() -> new InviteNotValidException("Invite does not exist"));
+        var user = userService.getUserById(userId);
+        var invite = findInviteById(inviteId);
         if(!invite.getReceiver().getId().equals(user.getId())){
             throw new InviteNotValidException("This user is not allowed to accept this invite");
         }
-        if(invite.getStatus() != InviteStatus.RECEIVED){
+        if(invite.getStatus() != InviteStatus.SENT){
             throw new InviteNotValidException("Invite is no longer valid");
         }
         var group = invite.getGroup();
         group.getMembers().add(user);
         deleteInvite(inviteId);
-        groupRepository.save(group);
+        groupService.saveGroup(group);
     }
     public void declineInvite(String userId, int inviteId){
-        var user = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("User cannot be found"));
-        var invite = inviteRepository
+        userService.getUserById(userId);
+        findInviteById(inviteId);
+        deleteInvite(inviteId);
+    }
+    public Invite findInviteById(int inviteId){
+        return inviteRepository
                 .findById(inviteId)
                 .orElseThrow(() -> new InviteNotValidException("Invite does not exist"));
-        deleteInvite(inviteId);
     }
     public void deleteInvite(int id){
         inviteRepository.deleteById(id);

@@ -3,6 +3,7 @@ package com.srikar.tally.dto.group;
 import com.srikar.tally.model.Groups;
 import com.srikar.tally.model.Users;
 
+
 public class GroupMapper {
 
     public static GroupResponseDto toDto(Groups groups){
@@ -11,8 +12,8 @@ public class GroupMapper {
                 .id(groups.getId())
                 .groupName(groups.getGroupName())
                 .groupDescription(groups.getGroupDescription())
-                .owner(groups.getOwner().getId())
-                .groupMemberList(groups.getMembers().stream().map(GroupMapper::toMember).toList())
+                .owner(GroupMapper.toMember(groups.getOwner()))
+                .groupMemberList(groups.getMembers() == null ? null : groups.getMembers().stream().map(GroupMapper::toMember).toList())
                 .build();
     }
     public static GroupMember toMember(Users user){

@@ -1,12 +1,16 @@
 package com.srikar.tally.controller;
 
 import com.srikar.tally.configuration.FirebaseUserPrincipal;
+import com.srikar.tally.dto.invite.InviteRequestDto;
 import com.srikar.tally.dto.invite.InviteResponseDto;
 import com.srikar.tally.service.InviteService;
+import lombok.Builder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -31,7 +35,15 @@ public class InviteController {
         var invitesSent = inviteService.getSentInvitations(userPrincipal.getUid());
         return ResponseEntity.ok(invitesSent);
     }
-    // this is cancel
+    @PostMapping("/")
+    public ResponseEntity<InviteResponseDto> createInvite(
+            @AuthenticationPrincipal FirebaseUserPrincipal userPrincipal,
+            @Validated(Builder.Default.class) @RequestBody InviteRequestDto dto
+            ){
+        var inviteSent = inviteService.createInvite(userPrincipal.getUid(), dto);
+        var location = URI.create("/api/v1/invites/"+inviteSent.getId());
+        return ResponseEntity.created(location).body(inviteSent);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteInvite(
             @PathVariable("id") int id

@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/expenses/personal")
+@RequestMapping("/v1/personal-expenses")
 public class PersonalExpensesController {
     private final PersonalExpenseService personalExpenseService;
 

@@ -9,12 +9,15 @@ import com.srikar.tally.repository.BalanceRepository;
 import com.srikar.tally.model.Groups;
 import com.srikar.tally.repository.GroupRepository;
 import com.srikar.tally.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 
 @Service
 public class GroupService{
+    private static final Logger log = LoggerFactory.getLogger(GroupService.class);
     private final GroupRepository groupRepo;
     private final UserRepository userRpo;
     private final BalanceRepository balanceRepo;
@@ -46,6 +49,7 @@ public class GroupService{
         var user = userRpo.findById(userId)
                 .orElseThrow(() -> new GroupNotFoundException("User and group cannot be found"));
         // no need to save in user as well. jpa will handle it for us.
+        log.info("group info {}", dto);
         var group = Groups.builder()
                 .groupName(dto.getGroupName())
                 .groupDescription(dto.getGroupDescription())
@@ -55,7 +59,6 @@ public class GroupService{
         return GroupMapper.toDto(group);
     }
 
-
     public GroupResponseDto updateGroup(int groupId, GroupRequestDto dto) {
         var group = groupRepo.findById(groupId).orElseThrow(() -> new GroupNotFoundException("Group Cannot be found"));
         group.setGroupName(dto.getGroupName());
@@ -64,6 +67,9 @@ public class GroupService{
         return GroupMapper.toDto(group);
     }
 
+    public Groups saveGroup(Groups groups){
+        return groupRepo.save(groups);
+    }
     public void deleteGroup(int groupId) {
         groupRepo.deleteById(groupId);
     }

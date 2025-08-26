@@ -12,6 +12,6 @@ import java.util.List;
 public interface GroupRepository extends JpaRepository<Groups, Integer> {
     List<Groups> findGroupsByOwner_Id(String id);
 
-    @Query("SELECT g from Groups g JOIN g.members m WHERE m.id=:userId")
+    @Query("SELECT g from Groups g LEFT JOIN FETCH g.members m WHERE m.id=:userId")
     List<Groups> findByMembersId(@Param("userId") String userId);
 }

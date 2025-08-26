@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class InviteResponseDto {
-    private String id;
+    private int id;
     private String groupName;
     private String sentBy;
     private InviteStatus status;
