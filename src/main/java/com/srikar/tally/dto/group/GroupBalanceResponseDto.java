@@ -8,7 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class GroupBalanceResponseDto {
-    private GroupMember owed;
-    private GroupMember paidBy;
-    private Double amount;
+    private String message;
 }

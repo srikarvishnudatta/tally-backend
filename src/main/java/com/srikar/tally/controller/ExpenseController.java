@@ -1,6 +1,7 @@
 package com.srikar.tally.controller;
 
 
+import com.srikar.tally.configuration.FirebaseUserPrincipal;
 import com.srikar.tally.dto.expenses.ExpenseRequestDto;
 import com.srikar.tally.dto.expenses.ExpenseResponseDto;
 import com.srikar.tally.dto.group.GroupBalanceResponseDto;
@@ -8,6 +9,7 @@ import com.srikar.tally.dto.validators.CreateExpenseValidationGroup;
 import com.srikar.tally.service.ExpenseService;
 import lombok.Builder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +26,11 @@ public class ExpenseController {
     }
 
     @GetMapping("/{groupId}")
-    public ResponseEntity<List<ExpenseResponseDto>> getExpenseByGroupId(
-            @PathVariable("groupId") int groupId
-    ){
-        var expenses = expenseService.getExpenseListByGroup(groupId);
+    public ResponseEntity<List<ExpenseResponseDto>> getExpensesByGroupId(
+            @PathVariable("groupId") int groupId,
+            @AuthenticationPrincipal FirebaseUserPrincipal userPrincipal
+            ){
+        var expenses = expenseService.getExpensesByGroup(groupId, userPrincipal.getUid());
         return ResponseEntity.ok(expenses);
     }
     @PostMapping("/")
@@ -55,9 +58,10 @@ public class ExpenseController {
     }
     @GetMapping("/{groupId}/balances")
     public ResponseEntity<List<GroupBalanceResponseDto>> getGroupBalances(
-            @PathVariable("groupId") int groupId
+            @PathVariable("groupId") int groupId,
+            @AuthenticationPrincipal FirebaseUserPrincipal userPrincipal
     ){
-        var balances = expenseService.calculateBalances(groupId);
+        var balances = expenseService.calculateBalances(groupId, userPrincipal.getUid());
         return ResponseEntity.ok(balances);
     }
 }

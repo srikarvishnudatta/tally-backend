@@ -12,6 +12,5 @@ import java.util.List;
 public class GroupResponseDto {
     private int id;
     private String groupName;
-    private String groupDescription;
     private List<GroupMember> groupMemberList;
 }

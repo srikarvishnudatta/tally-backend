@@ -41,14 +41,13 @@ public class PersonalExpenseService {
                 .amount(expense.getAmount())
                 .user(user)
                 .expenseType(ExpenseType.valueOf(expense.getExpenseType()))
-                .description(expense.getDescription()).build();
+                .build();
         newExpense = expensesRepository.save(newExpense);
         return ExpenseMapper.toDto(newExpense);
     }
     public PersonalExpenseResponseDto updatePersonalExpense(int expenseId, ExpenseRequestDto dto){
         var expense = expensesRepository.findById(expenseId).orElseThrow(() -> new ExpenseNotFoundException("Expense Cannot be found"));
         expense.setExpenseName(dto.getExpenseName());
-        expense.setDescription(dto.getDescription());
         expense.setAmount(dto.getAmount());
         expense.setExpenseType(ExpenseType.valueOf(dto.getExpenseType()));
         expense = expensesRepository.save(expense);

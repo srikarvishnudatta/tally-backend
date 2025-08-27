@@ -5,7 +5,6 @@ import com.srikar.tally.dto.expenses.ExpenseMapper;
 import com.srikar.tally.dto.expenses.ExpenseRequestDto;
 import com.srikar.tally.dto.expenses.ExpenseResponseDto;
 import com.srikar.tally.dto.group.GroupBalanceResponseDto;
-import com.srikar.tally.dto.group.GroupMapper;
 import com.srikar.tally.exception.ExpenseNotFoundException;
 import com.srikar.tally.model.Expense;
 import com.srikar.tally.model.ExpenseRecords;
@@ -13,8 +12,6 @@ import com.srikar.tally.model.Users;
 import com.srikar.tally.repository.ExpenseRecordRepository;
 import com.srikar.tally.repository.ExpensesRepository;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
@@ -23,7 +20,6 @@ import java.util.List;
 
 @Service
 public class ExpenseService  {
-    private static final Logger log = LoggerFactory.getLogger(ExpenseService.class);
     private final ExpensesRepository expenseRepo;
     private final ExpenseRecordRepository expenseRecordRepo;
     private final UserService userService;
@@ -40,12 +36,11 @@ public class ExpenseService  {
         this.groupService = groupService;
 
     }
-    public List<ExpenseResponseDto> getExpenseListByGroup(int groupId){
-        return expenseRepo.findExpensesByMyGroup_Id(groupId).stream().map(ExpenseMapper::toExpenseResponseDto).toList();
-    }
-    public ExpenseResponseDto getExpenseResponse(int expenseId){
-        var expenseFound = getExpenseById(expenseId);
-        return ExpenseMapper.toExpenseResponseDto(expenseFound);
+    public List<ExpenseResponseDto> getExpensesByGroup(int groupId, String currUserId){
+        return expenseRepo
+                .findExpensesByMyGroup_Id(groupId).stream()
+                .map(expense -> ExpenseMapper.toExpenseResponseDto(expense, currUserId))
+                .toList();
     }
     public Expense getExpenseById(int expenseId){
         return expenseRepo.findById(expenseId)
@@ -102,12 +97,22 @@ public class ExpenseService  {
     public void deleteExpense(int expenseId){
         expenseRepo.deleteById(expenseId);
     }
-    public List<GroupBalanceResponseDto> calculateBalances(int groupId){
+    public List<GroupBalanceResponseDto> calculateBalances(int groupId, String currUserId){
         var rawBalances = expenseRepo.calculateGroupBalances(groupId);
-        return rawBalances.stream().map(row -> new GroupBalanceResponseDto(
-                GroupMapper.toMember((Users) row[0]),
-                GroupMapper.toMember((Users) row[1]),
-                (Double) row[2]
-        )).toList();
+        return rawBalances.stream().map(row -> {
+            var owed = (Users) row[0];
+            var paidBy = (Users) row[1];
+            var amount = (Double) row[2];
+            var message = "";
+            if (paidBy.getId().equals(currUserId) && owed.getId().equals(currUserId)){
+                message = "";
+            }
+            else if (paidBy.getId().equals(currUserId)){
+                message =  owed.getFirstName() + " owes you " + amount;
+            }else{
+                message =  "You owe" + paidBy.getFirstName() + " " + amount;
+            }
+            return GroupBalanceResponseDto.builder().message(message).build();
+        }).toList();
     }
 }
